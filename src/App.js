@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { SafeAreaView, StyleSheet, View, StatusBar } from 'react-native';
+import Touchable from 'react-native-platform-touchable';
 import Gradient from './backgrounds/Gradient';
 import CalcButton from './buttons/CalcButton';
 import OutputView from './views/OutputView';
@@ -120,6 +121,19 @@ export default class App extends Component {
     });
   };
 
+  _deleteCharacter = () => {
+    this.setState((prevState) => {
+      let newExpr = prevState.expression;
+      let len = newExpr.length;
+      if (len > 1) {
+        newExpr = newExpr.substring(0, len - 1);
+        return {
+          expression: newExpr,
+        };
+      }
+    });
+  };
+
   _clearExpression = () => {
     this.setState({
       expression: baseExpr,
@@ -145,13 +159,19 @@ export default class App extends Component {
 
   _renderOutput = () => {
     return (
-      <View style={styles.output}>
-        <View style={styles.outputBar} />
-        <OutputView
-          expression={this.state.expression}
-          valid={this.state.valid}
-        />
-      </View>
+      <Touchable
+        style={styles.output}
+        onPress={this._deleteCharacter}
+        activeOpacity={1}
+      >
+        <>
+          <View style={styles.outputBar} />
+          <OutputView
+            expression={this.state.expression}
+            valid={this.state.valid}
+          />
+        </>
+      </Touchable>
     );
   };
 
